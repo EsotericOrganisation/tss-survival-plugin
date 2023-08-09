@@ -1,0 +1,10 @@
+name: TSS-Survival
+version: '${version}'
+main: net.slqmy.tss_survival.TSSSurvivalPlugin
+api-version: '1.20'
+prefix: TSS-Survival
+dependencies:
+  - name: TSS-Core
+    required: true
+authors: [slqmy]
+description: The plugin behind all the survival features of The Slimy Swamp.
