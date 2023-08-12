@@ -6,6 +6,7 @@ import org.bukkit.Chunk;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -22,7 +23,7 @@ public class ClaimListener implements Listener {
 	this.plugin = plugin;
   }
 
-  @EventHandler
+  @EventHandler(priority = EventPriority.LOW)
   public void onClaimBlockBreak(@NotNull BlockBreakEvent event) {
 	Chunk chunk = event.getBlock().getChunk();
 	PersistentDataContainer container = chunk.getPersistentDataContainer();
