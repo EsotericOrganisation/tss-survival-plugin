@@ -19,6 +19,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -180,6 +181,34 @@ public class SkillsListener implements Listener {
 
 	if (newLevel != oldLevel) {
 	  plugin.getCore().getMessageManager().sendMessage(enchanter, Message.SKILL_LEVEL_UP);
+	}
+  }
+
+  @EventHandler
+  public void onBrewPotion(@NotNull InventoryClickEvent event) {
+	ItemStack clickedItem = event.getCurrentItem();
+	if (clickedItem == null) {
+	  return;
+	}
+
+	InventoryType inventoryType = event.getInventory().getType();
+
+	if (inventoryType != InventoryType.BREWING) {
+	  return;
+	}
+
+	Player player = (Player) event.getWhoClicked();
+	PlayerProfile profile = plugin.getCore().getPlayerManager().getProfile(player);
+	SkillData skillData = profile.getSurvivalData().getSkillData();
+
+	int currentExp = skillData.getAlchemySkillExperience();
+	int oldLevel = getLevel(currentExp);
+
+	skillData.incrementAlchemySkillExperience(100);
+	int newLevel = getLevel(skillData.getAlchemySkillExperience());
+
+	if (newLevel != oldLevel) {
+	  plugin.getCore().getMessageManager().sendMessage(player, Message.SKILL_LEVEL_UP);
 	}
   }
 
