@@ -20,6 +20,7 @@ repositories {
 
 dependencies {
     compileOnly(files("../TSS-Core/build/libs/tss_core-0.1-dev-all.jar"))
+    compileOnly(files("../TSS-Ranks/build/libs/tss_ranks-0.1-dev.jar"))
 
     paperweight.paperDevBundle("1.20.1-R0.1-SNAPSHOT")
 }
