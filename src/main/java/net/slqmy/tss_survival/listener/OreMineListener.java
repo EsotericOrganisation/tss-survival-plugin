@@ -2,6 +2,7 @@ package net.slqmy.tss_survival.listener;
 
 import net.slqmy.tss_survival.TSSSurvivalPlugin;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
@@ -25,6 +26,12 @@ public class OreMineListener implements Listener {
 
   @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
   public void onOreMine(@NotNull BlockBreakEvent event) {
+	Player player = event.getPlayer();
+
+	if (player.getGameMode() == GameMode.CREATIVE) {
+	  return;
+	}
+
 	Block brokenBlock = event.getBlock();
 	String blockType = brokenBlock.getType().name();
 
@@ -32,7 +39,6 @@ public class OreMineListener implements Listener {
 	  return;
 	}
 
-	Player player = event.getPlayer();
 	PlayerInventory inventory = player.getInventory();
 
 	ItemStack heldItem = inventory.getItemInMainHand();
@@ -41,6 +47,6 @@ public class OreMineListener implements Listener {
 	  return;
 	}
 
-	Bukkit.getScheduler().runTaskLater(plugin, () -> brokenBlock.setType(blockType.startsWith("DEEPSLATE_") ? Material.DEEPSLATE : Material.STONE), 1L);
+	Bukkit.getScheduler().runTaskLater(plugin, () -> brokenBlock.setType(blockType.startsWith("DEEPSLATE_") ? Material.DEEPSLATE : blockType.startsWith("NETHER_") ? Material.NETHERRACK : Material.STONE), 1L);
   }
 }
