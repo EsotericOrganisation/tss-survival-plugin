@@ -9,6 +9,7 @@ import net.slqmy.tss_ranks.TSSRanksPlugin;
 import net.slqmy.tss_survival.command.ClaimCommand;
 import net.slqmy.tss_survival.listener.ClaimListener;
 import net.slqmy.tss_survival.listener.ConnectionListener;
+import net.slqmy.tss_survival.listener.OreMineListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.NamespacedKey;
@@ -73,5 +74,6 @@ public final class TSSSurvivalPlugin extends JavaPlugin {
 	PluginManager pluginManager = Bukkit.getPluginManager();
 	pluginManager.registerEvents(new ConnectionListener(this), this);
 	pluginManager.registerEvents(new ClaimListener(this), this);
+	pluginManager.registerEvents(new OreMineListener(this), this);
   }
 }
