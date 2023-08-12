@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.jetbrains.annotations.NotNull;
 
@@ -157,6 +158,25 @@ public class SkillsListener implements Listener {
 
 	if (newLevel != oldLevel) {
 	  plugin.getCore().getMessageManager().sendMessage(event.getPlayer(), Message.SKILL_LEVEL_UP);
+	}
+  }
+
+  @EventHandler
+  public void onEnchant(@NotNull EnchantItemEvent event) {
+	Player enchanter = event.getEnchanter();
+	int earnedExp = event.getEnchantsToAdd().keySet().size() * 100;
+
+	PlayerProfile profile = plugin.getCore().getPlayerManager().getProfile(enchanter);
+	SkillData skillData = profile.getSurvivalData().getSkillData();
+
+	int currentExp = skillData.getEnchantingSkillExperience();
+	int oldLevel = getLevel(currentExp);
+
+	skillData.incrementEnchantingSkillExperience(earnedExp);
+	int newLevel = getLevel(skillData.getEnchantingSkillExperience());
+
+	if (newLevel != oldLevel) {
+	  plugin.getCore().getMessageManager().sendMessage(enchanter, Message.SKILL_LEVEL_UP);
 	}
   }
 
