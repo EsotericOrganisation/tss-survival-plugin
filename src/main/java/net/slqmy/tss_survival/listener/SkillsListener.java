@@ -4,6 +4,7 @@ import net.slqmy.tss_core.datatype.player.Message;
 import net.slqmy.tss_core.datatype.player.PlayerProfile;
 import net.slqmy.tss_core.datatype.player.survival.SkillData;
 import net.slqmy.tss_core.util.DebugUtil;
+import net.slqmy.tss_survival.FarmingSkillExpReward;
 import net.slqmy.tss_survival.MiningSkillExpReward;
 import net.slqmy.tss_survival.TSSSurvivalPlugin;
 import org.bukkit.Material;
@@ -125,6 +126,34 @@ public class SkillsListener implements Listener {
 
 	skillData.incrementForagingSkillExperience(gainedExp);
 	int newLevel = getLevel(skillData.getForagingSkillExperience());
+
+	if (newLevel != oldLevel) {
+	  plugin.getCore().getMessageManager().sendMessage(event.getPlayer(), Message.SKILL_LEVEL_UP);
+	}
+  }
+
+  @EventHandler
+  public void onFarm(@NotNull BlockBreakEvent event) {
+	Block brokenBlock = event.getBlock();
+	Material blockType = brokenBlock.getType();
+	String blockTypeString = blockType.name();
+
+	FarmingSkillExpReward reward;
+	try {
+	  reward = FarmingSkillExpReward.valueOf(blockTypeString);
+	} catch (IllegalArgumentException exception) {
+	  return;
+	}
+
+	Player player = event.getPlayer();
+	PlayerProfile profile = plugin.getCore().getPlayerManager().getProfile(player);
+	SkillData skillData = profile.getSurvivalData().getSkillData();
+
+	int currentExp = skillData.getFarmingSkillExperience();
+	int oldLevel = getLevel(currentExp);
+
+	skillData.incrementFarmingSkillExperience(reward.getExpReward());
+	int newLevel = getLevel(skillData.getFarmingSkillExperience());
 
 	if (newLevel != oldLevel) {
 	  plugin.getCore().getMessageManager().sendMessage(event.getPlayer(), Message.SKILL_LEVEL_UP);
