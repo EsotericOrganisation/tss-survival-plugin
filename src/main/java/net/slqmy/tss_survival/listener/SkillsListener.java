@@ -18,6 +18,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public class SkillsListener implements Listener {
@@ -177,6 +179,58 @@ public class SkillsListener implements Listener {
 
 	if (newLevel != oldLevel) {
 	  plugin.getCore().getMessageManager().sendMessage(enchanter, Message.SKILL_LEVEL_UP);
+	}
+  }
+
+  @EventHandler
+  public void onForge(@NotNull InventoryClickEvent event) {
+	ItemStack clickedItem = event.getCurrentItem();
+	if (clickedItem == null) {
+	  return;
+	}
+
+	String inventoryType = event.getInventory().getType().name();
+
+	int requiredSlot;
+	int expReward;
+	switch (inventoryType) {
+	  case "ANVIL" -> {
+		requiredSlot = 2;
+		expReward = 150;
+	  }
+	  case "SMITHING" -> {
+		requiredSlot = 3;
+		expReward = 450;
+	  }
+	  case "BLAST_FURNACE" -> {
+		requiredSlot = 2;
+		expReward = 20;
+	  }
+	  case "GRINDSTONE" -> {
+		requiredSlot = 2;
+		expReward = 50;
+	  }
+	  default -> {
+		return;
+	  }
+	}
+
+	if (event.getRawSlot() != requiredSlot) {
+	  return;
+	}
+
+	Player player = (Player) event.getWhoClicked();
+	PlayerProfile profile = plugin.getCore().getPlayerManager().getProfile(player);
+	SkillData skillData = profile.getSurvivalData().getSkillData();
+
+	int currentExp = skillData.getForgingSkillExperience();
+	int oldLevel = getLevel(currentExp);
+
+	skillData.incrementForgingSkillExperience(expReward);
+	int newLevel = getLevel(skillData.getForgingSkillExperience());
+
+	if (newLevel != oldLevel) {
+	  plugin.getCore().getMessageManager().sendMessage(player, Message.SKILL_LEVEL_UP);
 	}
   }
 
