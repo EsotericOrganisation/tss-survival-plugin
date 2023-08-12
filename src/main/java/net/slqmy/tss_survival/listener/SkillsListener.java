@@ -19,6 +19,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -228,6 +229,22 @@ public class SkillsListener implements Listener {
 
 	skillData.incrementForgingSkillExperience(expReward);
 	int newLevel = getLevel(skillData.getForgingSkillExperience());
+
+	if (newLevel != oldLevel) {
+	  plugin.getCore().getMessageManager().sendMessage(player, Message.SKILL_LEVEL_UP);
+	}
+  }
+
+  public void onFish(@NotNull PlayerFishEvent event) {
+	Player player = event.getPlayer();
+	PlayerProfile profile = plugin.getCore().getPlayerManager().getProfile(player);
+	SkillData skillData = profile.getSurvivalData().getSkillData();
+
+	int currentExp = skillData.getFishingSkillExperience();
+	int oldLevel = getLevel(currentExp);
+
+	skillData.incrementFishingSkillExperience(100);
+	int newLevel = getLevel(skillData.getFishingSkillExperience());
 
 	if (newLevel != oldLevel) {
 	  plugin.getCore().getMessageManager().sendMessage(player, Message.SKILL_LEVEL_UP);
