@@ -29,8 +29,6 @@ public final class TSSSurvivalPlugin extends JavaPlugin {
 
   private final TSSRanksPlugin ranksPlugin = (TSSRanksPlugin) Bukkit.getPluginManager().getPlugin("TSS-Ranks");
 
-  private List<String> survivalWorldNames;
-
   public TSSRanksPlugin getRanksPlugin() {
 	return ranksPlugin;
   }
@@ -39,18 +37,12 @@ public final class TSSSurvivalPlugin extends JavaPlugin {
 	return core;
   }
 
-  public List<String> getSurvivalWorldNames() {
-	return survivalWorldNames;
-  }
-
   @Override
   public void onEnable() {
 	YamlConfiguration config = (YamlConfiguration) getConfig();
 
 	config.options().copyDefaults();
 	saveDefaultConfig();
-
-	survivalWorldNames = config.getStringList("survival-worlds");
 
 	core.getDatabase().getCursor(PlayersCollectionName.PLAYER_PROFILES, (MongoCursor<PlayerProfile> cursor) -> {
               while (cursor.hasNext()) {

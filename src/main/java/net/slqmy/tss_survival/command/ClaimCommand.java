@@ -24,7 +24,7 @@ public class ClaimCommand {
 	new CommandAPICommand("claim")
 			.executesPlayer((Player player, CommandArguments args) -> {
 			  MessageManager messageManager = plugin.getCore().getMessageManager();
-			  if (!plugin.getSurvivalWorldNames().contains(player.getWorld().getName())) {
+			  if (!plugin.getCore().getSurvivalWorldNames().contains(player.getWorld().getName())) {
 				messageManager.sendMessage(player, Message.CANT_CLAIM_HERE);
 				return;
 			  }

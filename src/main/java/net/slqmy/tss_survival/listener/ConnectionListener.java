@@ -37,7 +37,7 @@ public class ConnectionListener implements Listener {
 
     BukkitTask claimMessageTask = Bukkit.getScheduler().runTaskTimer(
             plugin, () -> {
-              if (!plugin.getSurvivalWorldNames().contains(player.getWorld().getName())) {
+              if (!plugin.getCore().getSurvivalWorldNames().contains(player.getWorld().getName())) {
                 return;
               }
 
