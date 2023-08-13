@@ -1,29 +1,17 @@
 package net.slqmy.tss_survival;
 
-import com.mongodb.client.MongoCursor;
 import net.slqmy.tss_core.TSSCorePlugin;
-import net.slqmy.tss_core.database.collection_name.PlayersCollectionName;
-import net.slqmy.tss_core.datatype.player.PlayerProfile;
-import net.slqmy.tss_core.datatype.player.survival.Claim;
 import net.slqmy.tss_ranks.TSSRanksPlugin;
 import net.slqmy.tss_survival.command.ClaimCommand;
+import net.slqmy.tss_survival.command.SkillsCommand;
 import net.slqmy.tss_survival.listener.ClaimListener;
 import net.slqmy.tss_survival.listener.ConnectionListener;
 import net.slqmy.tss_survival.listener.OreMineListener;
 import net.slqmy.tss_survival.listener.SkillsListener;
 import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.NamespacedKey;
-import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public final class TSSSurvivalPlugin extends JavaPlugin {
 
@@ -46,28 +34,8 @@ public final class TSSSurvivalPlugin extends JavaPlugin {
 	config.options().copyDefaults();
 	saveDefaultConfig();
 
-	core.getDatabase().getCursor(PlayersCollectionName.PLAYER_PROFILES, (MongoCursor<PlayerProfile> cursor) -> {
-              while (cursor.hasNext()) {
-                PlayerProfile profile = cursor.next();
-
-				Map<String, ArrayList<List<Integer>>> claims = profile.getSurvivalData().getClaims();
-                for (String worldName : claims.keySet()) {
-				  for (List<Integer> claim : claims.get(worldName)) {
-					World world = Bukkit.getWorld(worldName);
-					assert world != null;
-
-					Chunk chunk = world.getChunkAt(claim.get(0), claim.get(1), false);
-					PersistentDataContainer container = chunk.getPersistentDataContainer();
-
-					container.set(new NamespacedKey(this, "chunk_claim_owner"), PersistentDataType.STRING, profile.getUuid().toString());
-				  }
-                }
-              }
-            },
-            PlayerProfile.class
-	);
-
 	new ClaimCommand(this);
+	new SkillsCommand();
 
 	PluginManager pluginManager = Bukkit.getPluginManager();
 	pluginManager.registerEvents(new ConnectionListener(this), this);
