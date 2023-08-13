@@ -2,8 +2,8 @@ package net.slqmy.tss_survival.listener;
 
 import net.slqmy.tss_core.datatype.player.Message;
 import net.slqmy.tss_core.datatype.player.PlayerProfile;
-import net.slqmy.tss_core.datatype.player.survival.SkillData;
-import net.slqmy.tss_core.util.DebugUtil;
+import net.slqmy.tss_core.datatype.player.survival.SkillType;
+import net.slqmy.tss_core.event.custom_event.SkillLevelUpEvent;
 import net.slqmy.tss_survival.FarmingSkillExpReward;
 import net.slqmy.tss_survival.MiningSkillExpReward;
 import net.slqmy.tss_survival.TSSSurvivalPlugin;
@@ -42,9 +42,6 @@ public class SkillsListener implements Listener {
 	}
 
 	PlayerProfile murdererProfile = plugin.getCore().getPlayerManager().getProfile(killer);
-	SkillData skillData = murdererProfile.getSurvivalData().getSkillData();
-
-	int oldLevel = getLevel(skillData.getCombatSkillExperience());
 
 	double gainedExp = 0;
 	for (
@@ -67,14 +64,7 @@ public class SkillsListener implements Listener {
 	  }
 	}
 
-	murdererProfile.getSurvivalData().getSkillData().incrementCombatSkillExperience((int) gainedExp);
-
-	int newLevel = getLevel(skillData.getCombatSkillExperience());
-	DebugUtil.log("New combat experience: " + skillData.getCombatSkillExperience());
-
-	if (newLevel != oldLevel) {
-	  plugin.getCore().getMessageManager().sendMessage(killer, Message.SKILL_LEVEL_UP);
-	}
+	murdererProfile.getSurvivalData().incrementSkillExperience(SkillType.COMBAT, (int) gainedExp);
   }
 
   @EventHandler
@@ -82,25 +72,17 @@ public class SkillsListener implements Listener {
 	Block brokenBlock = event.getBlock();
 	Material blockType = brokenBlock.getType();
 
-	MiningSkillExpReward miningSkillExpReward;
+	MiningSkillExpReward reward;
 	try {
-	  miningSkillExpReward = MiningSkillExpReward.valueOf(blockType.name());
+	  reward = MiningSkillExpReward.valueOf(blockType.name());
 	} catch (IllegalArgumentException exception) {
 	  return;
 	}
 
-	PlayerProfile profile = plugin.getCore().getPlayerManager().getProfile(event.getPlayer());
-	SkillData skillData = profile.getSurvivalData().getSkillData();
+	Player player = event.getPlayer();
+	PlayerProfile profile = plugin.getCore().getPlayerManager().getProfile(player);
 
-	int currentExp = skillData.getMiningSkillExperience();
-	int oldLevel = getLevel(currentExp);
-
-	skillData.incrementMiningSkillExperience(miningSkillExpReward.getExpReward());
-	int newLevel = getLevel(skillData.getMiningSkillExperience());
-
-	if (newLevel != oldLevel) {
-	  plugin.getCore().getMessageManager().sendMessage(event.getPlayer(), Message.SKILL_LEVEL_UP);
-	}
+	profile.getSurvivalData().incrementSkillExperience(SkillType.MINING, reward.getExpReward());
   }
 
   @EventHandler
@@ -123,18 +105,10 @@ public class SkillsListener implements Listener {
 	  return;
 	}
 
-	PlayerProfile profile = plugin.getCore().getPlayerManager().getProfile(event.getPlayer());
-	SkillData skillData = profile.getSurvivalData().getSkillData();
+	Player player = event.getPlayer();
+	PlayerProfile profile = plugin.getCore().getPlayerManager().getProfile(player);
 
-	int currentExp = skillData.getForagingSkillExperience();
-	int oldLevel = getLevel(currentExp);
-
-	skillData.incrementForagingSkillExperience(gainedExp);
-	int newLevel = getLevel(skillData.getForagingSkillExperience());
-
-	if (newLevel != oldLevel) {
-	  plugin.getCore().getMessageManager().sendMessage(event.getPlayer(), Message.SKILL_LEVEL_UP);
-	}
+	profile.getSurvivalData().incrementSkillExperience(SkillType.FORAGING, gainedExp);
   }
 
   @EventHandler
@@ -152,17 +126,8 @@ public class SkillsListener implements Listener {
 
 	Player player = event.getPlayer();
 	PlayerProfile profile = plugin.getCore().getPlayerManager().getProfile(player);
-	SkillData skillData = profile.getSurvivalData().getSkillData();
 
-	int currentExp = skillData.getFarmingSkillExperience();
-	int oldLevel = getLevel(currentExp);
-
-	skillData.incrementFarmingSkillExperience(reward.getExpReward());
-	int newLevel = getLevel(skillData.getFarmingSkillExperience());
-
-	if (newLevel != oldLevel) {
-	  plugin.getCore().getMessageManager().sendMessage(event.getPlayer(), Message.SKILL_LEVEL_UP);
-	}
+	profile.getSurvivalData().incrementSkillExperience(SkillType.FARMING, reward.getExpReward());
   }
 
   @EventHandler
@@ -171,17 +136,8 @@ public class SkillsListener implements Listener {
 	int earnedExp = event.getEnchantsToAdd().keySet().size() * 100;
 
 	PlayerProfile profile = plugin.getCore().getPlayerManager().getProfile(enchanter);
-	SkillData skillData = profile.getSurvivalData().getSkillData();
 
-	int currentExp = skillData.getEnchantingSkillExperience();
-	int oldLevel = getLevel(currentExp);
-
-	skillData.incrementEnchantingSkillExperience(earnedExp);
-	int newLevel = getLevel(skillData.getEnchantingSkillExperience());
-
-	if (newLevel != oldLevel) {
-	  plugin.getCore().getMessageManager().sendMessage(enchanter, Message.SKILL_LEVEL_UP);
-	}
+	profile.getSurvivalData().incrementSkillExperience(SkillType.ENCHANTING, earnedExp);
   }
 
   @EventHandler
@@ -199,17 +155,8 @@ public class SkillsListener implements Listener {
 
 	Player player = (Player) event.getWhoClicked();
 	PlayerProfile profile = plugin.getCore().getPlayerManager().getProfile(player);
-	SkillData skillData = profile.getSurvivalData().getSkillData();
 
-	int currentExp = skillData.getAlchemySkillExperience();
-	int oldLevel = getLevel(currentExp);
-
-	skillData.incrementAlchemySkillExperience(100);
-	int newLevel = getLevel(skillData.getAlchemySkillExperience());
-
-	if (newLevel != oldLevel) {
-	  plugin.getCore().getMessageManager().sendMessage(player, Message.SKILL_LEVEL_UP);
-	}
+	profile.getSurvivalData().incrementSkillExperience(SkillType.ALCHEMY, 300);
   }
 
   @EventHandler
@@ -251,37 +198,19 @@ public class SkillsListener implements Listener {
 
 	Player player = (Player) event.getWhoClicked();
 	PlayerProfile profile = plugin.getCore().getPlayerManager().getProfile(player);
-	SkillData skillData = profile.getSurvivalData().getSkillData();
 
-	int currentExp = skillData.getForgingSkillExperience();
-	int oldLevel = getLevel(currentExp);
-
-	skillData.incrementForgingSkillExperience(expReward);
-	int newLevel = getLevel(skillData.getForgingSkillExperience());
-
-	if (newLevel != oldLevel) {
-	  plugin.getCore().getMessageManager().sendMessage(player, Message.SKILL_LEVEL_UP);
-	}
+	profile.getSurvivalData().incrementSkillExperience(SkillType.FORGING, expReward);
   }
 
   public void onFish(@NotNull PlayerFishEvent event) {
 	Player player = event.getPlayer();
 	PlayerProfile profile = plugin.getCore().getPlayerManager().getProfile(player);
-	SkillData skillData = profile.getSurvivalData().getSkillData();
 
-	int currentExp = skillData.getFishingSkillExperience();
-	int oldLevel = getLevel(currentExp);
-
-	skillData.incrementFishingSkillExperience(100);
-	int newLevel = getLevel(skillData.getFishingSkillExperience());
-
-	if (newLevel != oldLevel) {
-	  plugin.getCore().getMessageManager().sendMessage(player, Message.SKILL_LEVEL_UP);
-	}
+	profile.getSurvivalData().incrementSkillExperience(SkillType.FISHING, 100);
   }
 
-  private int getLevel(int experience) {
-	double power = Math.pow(Math.sqrt(3D) * Math.sqrt(27D * Math.pow(experience, 2D) + 10000D) - 9D * experience, 1D / 3D);
-	return (int) Math.floor(Math.pow(10D, 2D / 3D) / (Math.pow(3D, 1D / 3D) * power) - power / Math.pow(30D, 2D / 3D));
+  @EventHandler
+  public void onSkillLevelUp(@NotNull SkillLevelUpEvent event) {
+	plugin.getCore().getMessageManager().sendMessage(event.getPlayer(), Message.SKILL_LEVEL_UP,event.getSkillType().name());
   }
 }
