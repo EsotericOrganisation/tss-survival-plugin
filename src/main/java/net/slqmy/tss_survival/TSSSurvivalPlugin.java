@@ -5,6 +5,7 @@ import net.slqmy.tss_ranks.TSSRanksPlugin;
 import net.slqmy.tss_survival.command.ClaimCommand;
 import net.slqmy.tss_survival.command.SkillsCommand;
 import net.slqmy.tss_survival.command.TrustCommand;
+import net.slqmy.tss_survival.command.UnTrustCommand;
 import net.slqmy.tss_survival.listener.ClaimListener;
 import net.slqmy.tss_survival.listener.ConnectionListener;
 import net.slqmy.tss_survival.listener.OreMineListener;
@@ -37,6 +38,7 @@ public final class TSSSurvivalPlugin extends JavaPlugin {
 
 	new ClaimCommand(this);
 	new TrustCommand(this);
+	new UnTrustCommand(this);
 
 	new SkillsCommand();
 
