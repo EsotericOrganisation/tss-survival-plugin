@@ -69,6 +69,9 @@ public class ConnectionListener implements Listener {
 
   @EventHandler
   public void onQuit(@NotNull PlayerQuitEvent event) {
-    claimMessageTasks.remove(event.getPlayer().getUniqueId());
+    UUID playerUuid = event.getPlayer().getUniqueId();
+
+    claimMessageTasks.get(playerUuid).cancel();
+    claimMessageTasks.remove(playerUuid);
   }
 }
