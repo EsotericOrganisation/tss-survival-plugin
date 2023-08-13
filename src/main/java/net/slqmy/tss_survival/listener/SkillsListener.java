@@ -14,6 +14,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.enchantment.EnchantItemEvent;
@@ -67,7 +68,7 @@ public class SkillsListener implements Listener {
 	murdererProfile.getSurvivalData().incrementSkillExperience(SkillType.COMBAT, (int) gainedExp);
   }
 
-  @EventHandler
+  @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
   public void onMineBlock(@NotNull BlockBreakEvent event) {
 	Block brokenBlock = event.getBlock();
 	Material blockType = brokenBlock.getType();
@@ -85,7 +86,7 @@ public class SkillsListener implements Listener {
 	profile.getSurvivalData().incrementSkillExperience(SkillType.MINING, reward.getExpReward());
   }
 
-  @EventHandler
+  @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
   public void onForage(@NotNull BlockBreakEvent event) {
 	Block brokenBlock = event.getBlock();
 	Material blockType = brokenBlock.getType();
@@ -111,7 +112,7 @@ public class SkillsListener implements Listener {
 	profile.getSurvivalData().incrementSkillExperience(SkillType.FORAGING, gainedExp);
   }
 
-  @EventHandler
+  @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
   public void onFarm(@NotNull BlockBreakEvent event) {
 	Block brokenBlock = event.getBlock();
 	Material blockType = brokenBlock.getType();
