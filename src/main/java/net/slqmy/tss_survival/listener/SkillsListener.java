@@ -142,6 +142,12 @@ public class SkillsListener implements Listener {
 
   @EventHandler
   public void onBrewPotion(@NotNull InventoryClickEvent event) {
+	int slot = event.getRawSlot();
+
+	if (slot != 0 && slot != 1 && slot != 2) {
+	  return;
+	}
+
 	ItemStack clickedItem = event.getCurrentItem();
 	if (clickedItem == null) {
 	  return;
@@ -202,6 +208,7 @@ public class SkillsListener implements Listener {
 	profile.getSurvivalData().incrementSkillExperience(SkillType.FORGING, expReward);
   }
 
+  @EventHandler
   public void onFish(@NotNull PlayerFishEvent event) {
 	Player player = event.getPlayer();
 	PlayerProfile profile = plugin.getCore().getPlayerManager().getProfile(player);
