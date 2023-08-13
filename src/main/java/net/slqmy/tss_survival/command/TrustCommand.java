@@ -15,16 +15,23 @@ import net.slqmy.tss_core.manager.MessageManager;
 import net.slqmy.tss_survival.TSSSurvivalPlugin;
 import org.bukkit.Chunk;
 import org.bukkit.NamespacedKey;
+import org.bukkit.World;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.UUID;
+import java.util.*;
 
 public class TrustCommand {
 
+  private final TSSSurvivalPlugin plugin;
+
   public TrustCommand(TSSSurvivalPlugin plugin) {
+	this.plugin = plugin;
+
 	new CommandAPICommand("trust")
 			.withArguments(new PlayerArgument("player"))
 			.withArguments(
@@ -47,16 +54,22 @@ public class TrustCommand {
 
 			  TSSCorePlugin core = plugin.getCore();
 			  MessageManager messageManager = core.getMessageManager();
-			  if (ownerUuidString == null) {
-				messageManager.sendMessage(player, Message.CHUNK_NOT_CLAIMED);
-				return;
-			  }
 
-			  UUID ownerUuid = UUID.fromString(ownerUuidString);
+			  String whereToSearch = (String) args.get("where-to-trust");
+			  assert whereToSearch != null;
 
-			  if (!ownerUuid.equals(player.getUniqueId())) {
-				messageManager.sendMessage(player, Message.NOT_YOUR_CHUNK);
-				return;
+			  if (!whereToSearch.equals("all")) {
+				if (ownerUuidString == null) {
+				  messageManager.sendMessage(player, Message.CHUNK_NOT_CLAIMED);
+				  return;
+				}
+
+				UUID ownerUuid = UUID.fromString(ownerUuidString);
+
+				if (!ownerUuid.equals(player.getUniqueId())) {
+				  messageManager.sendMessage(player, Message.NOT_YOUR_CHUNK);
+				  return;
+				}
 			  }
 
 			  Player trustedPlayer = (Player) args.get("player");
@@ -67,27 +80,115 @@ public class TrustCommand {
 				return;
 			  }
 
-			  PlayerProfile profile = core.getPlayerManager().getProfile(player);
+			  List<int[]> chunksToTrustPlayerIn = new ArrayList<>();
 
 			  int x = currentChunk.getX();
 			  int z = currentChunk.getZ();
 
+			  PlayerProfile profile = core.getPlayerManager().getProfile(player);
 			  ArrayList<ClaimedChunk> claimedChunks = profile.getSurvivalData().getClaims().get(player.getWorld().getName());
-			  for (ClaimedChunk claimedChunk : claimedChunks) {
-				if (claimedChunk.getX() == x && claimedChunk.getZ() == z) {
-				  ArrayList<UUID> trustedPlayers = claimedChunk.getTrustedPlayers();
-				  UUID trustedUuid = trustedPlayer.getUniqueId();
 
-				  if (trustedPlayers.contains(trustedUuid)) {
-					messageManager.sendMessage(player, Message.PLAYER_ALREADY_TRUSTED);
-					return;
+			  switch (whereToSearch) {
+				case "all" -> {
+				  for (ClaimedChunk claimedChunk : claimedChunks) {
+					ArrayList<UUID> trustedPlayers = claimedChunk.getTrustedPlayers();
+					UUID trustedUuid = trustedPlayer.getUniqueId();
+
+					if (trustedPlayers.contains(trustedUuid)) {
+					  continue;
+					}
+
+					trustedPlayers.add(trustedUuid);
+					messageManager.sendMessage(player, Message.PLAYER_SUCCESSFULLY_TRUSTED);
 				  }
 
-				  trustedPlayers.add(trustedUuid);
-				  messageManager.sendMessage(player, Message.PLAYER_SUCCESSFULLY_TRUSTED);
+				  return;
+				}
+				case "connected" ->
+				  chunksToTrustPlayerIn = getChunksToTrustPlayerIn(player.getWorld(), player.getUniqueId(), trustedPlayer.getUniqueId(),chunksToTrustPlayerIn,null,new int[] {x, z});
+				case "chunk" -> {
+				  chunksToTrustPlayerIn = List.of(new int[]{x, z});
+				  container.set(new NamespacedKey(plugin, trustedPlayer.getUniqueId() + "_is_trusted"), PersistentDataType.BOOLEAN, true);
 				}
 			  }
+
+			  for (ClaimedChunk claimedChunk : claimedChunks) {
+				assert chunksToTrustPlayerIn != null;
+
+				boolean contains = false;
+				for (int[] chunk : chunksToTrustPlayerIn) {
+				  if (chunk[0] == claimedChunk.getX() && chunk[1] == claimedChunk.getZ()) {
+					contains = true;
+				  }
+				}
+
+				if (!contains) {
+				  continue;
+				}
+
+				ArrayList<UUID> trustedPlayers = claimedChunk.getTrustedPlayers();
+				UUID trustedUuid = trustedPlayer.getUniqueId();
+
+				if (trustedPlayers.contains(trustedUuid)) {
+				  continue;
+				}
+
+				trustedPlayers.add(trustedUuid);
+			  }
+
+			  messageManager.sendMessage(player, Message.PLAYER_SUCCESSFULLY_TRUSTED);
 			})
 			.register();
+  }
+
+  @Nullable
+  private ArrayList<int[]> getChunksToTrustPlayerIn(@NotNull World world, UUID claimsOwnerUuid, UUID playerToTrustUuid, @NotNull List<int[]> currentChunksToTrustPlayerIn, BlockFace currentDirection, @NotNull int[] previousChunk) {
+	int newChunkX = previousChunk[0] + (currentDirection == BlockFace.EAST ? 1 : currentDirection == BlockFace.WEST ? -1 : 0);
+	int newChunkZ = previousChunk[1] + (currentDirection == BlockFace.SOUTH ? 1 : currentDirection == BlockFace.NORTH ? -1 : 0);
+
+	int[] currentChunk = new int[] {newChunkX, newChunkZ};
+
+	if (currentChunksToTrustPlayerIn.contains(currentChunk)) {
+	  return null;
+	}
+
+	Chunk newChunk = world.getChunkAt(newChunkX, newChunkZ, false);
+	PersistentDataContainer chunkInfo = newChunk.getPersistentDataContainer();
+	String chunkOwnerUuidString = chunkInfo.get(new NamespacedKey(plugin, "chunk_claim_owner"), PersistentDataType.STRING);
+
+	if (chunkOwnerUuidString == null) {
+	  return null;
+	}
+
+	UUID chunkOwnerUuid = UUID.fromString(chunkOwnerUuidString);
+	if (!chunkOwnerUuid.equals(claimsOwnerUuid)) {
+	  return null;
+	}
+
+	NamespacedKey playerIsTrustedKey = new NamespacedKey(plugin, playerToTrustUuid + "_is_trusted");
+	Boolean playerIsTrusted = chunkInfo.get(playerIsTrustedKey, PersistentDataType.BOOLEAN);
+	if (playerIsTrusted != null) {
+	  return null;
+	}
+
+	ArrayList<int[]> claimsToTrustPlayerIn = new ArrayList<>();
+	claimsToTrustPlayerIn.add(currentChunk);
+	chunkInfo.set(playerIsTrustedKey, PersistentDataType.BOOLEAN, true);
+
+	List<BlockFace> directionsToSearchIn = new LinkedList<>(Arrays.asList(BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST));
+
+	if (currentDirection != null) {
+	  directionsToSearchIn.remove(currentDirection.getOppositeFace());
+	}
+
+	for (BlockFace blockFace : directionsToSearchIn) {
+	  ArrayList<int[]> chunksToAdd = getChunksToTrustPlayerIn(world, claimsOwnerUuid, playerToTrustUuid, currentChunksToTrustPlayerIn, blockFace, currentChunk);
+
+	  if (chunksToAdd != null) {
+		claimsToTrustPlayerIn.addAll(chunksToAdd);
+	  }
+	}
+
+	return claimsToTrustPlayerIn;
   }
 }

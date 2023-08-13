@@ -4,6 +4,7 @@ import net.slqmy.tss_core.TSSCorePlugin;
 import net.slqmy.tss_ranks.TSSRanksPlugin;
 import net.slqmy.tss_survival.command.ClaimCommand;
 import net.slqmy.tss_survival.command.SkillsCommand;
+import net.slqmy.tss_survival.command.TrustCommand;
 import net.slqmy.tss_survival.listener.ClaimListener;
 import net.slqmy.tss_survival.listener.ConnectionListener;
 import net.slqmy.tss_survival.listener.OreMineListener;
@@ -35,6 +36,8 @@ public final class TSSSurvivalPlugin extends JavaPlugin {
 	saveDefaultConfig();
 
 	new ClaimCommand(this);
+	new TrustCommand(this);
+
 	new SkillsCommand();
 
 	PluginManager pluginManager = Bukkit.getPluginManager();
