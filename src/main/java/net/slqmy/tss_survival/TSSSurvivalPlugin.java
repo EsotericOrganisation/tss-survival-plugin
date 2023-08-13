@@ -22,6 +22,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public final class TSSSurvivalPlugin extends JavaPlugin {
@@ -49,13 +50,13 @@ public final class TSSSurvivalPlugin extends JavaPlugin {
               while (cursor.hasNext()) {
                 PlayerProfile profile = cursor.next();
 
-				Map<String, ArrayList<Claim>> claims = profile.getSurvivalData().getClaims();
+				Map<String, ArrayList<List<Integer>>> claims = profile.getSurvivalData().getClaims();
                 for (String worldName : claims.keySet()) {
-				  for (Claim claim : claims.get(worldName)) {
+				  for (List<Integer> claim : claims.get(worldName)) {
 					World world = Bukkit.getWorld(worldName);
 					assert world != null;
 
-					Chunk chunk = world.getChunkAt(claim.getChunkX(), claim.getChunkZ(), false);
+					Chunk chunk = world.getChunkAt(claim.get(0), claim.get(1), false);
 					PersistentDataContainer container = chunk.getPersistentDataContainer();
 
 					container.set(new NamespacedKey(this, "chunk_claim_owner"), PersistentDataType.STRING, profile.getUuid().toString());

@@ -5,7 +5,6 @@ import dev.jorel.commandapi.executors.CommandArguments;
 import net.slqmy.tss_core.datatype.Rank;
 import net.slqmy.tss_core.datatype.player.Message;
 import net.slqmy.tss_core.datatype.player.PlayerProfile;
-import net.slqmy.tss_core.datatype.player.survival.Claim;
 import net.slqmy.tss_core.datatype.player.survival.SurvivalPlayerData;
 import net.slqmy.tss_core.manager.MessageManager;
 import net.slqmy.tss_survival.TSSSurvivalPlugin;
@@ -16,6 +15,8 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class ClaimCommand {
@@ -41,14 +42,14 @@ public class ClaimCommand {
 			  SurvivalPlayerData survivalData = profile.getSurvivalData();
 			  // Check if they have enough allowed claims. If not, return.
 
-			  Map<String, ArrayList<Claim>> claimMap = survivalData.getClaims();
-			  ArrayList<Claim> claims = claimMap.get(player.getWorld().getName());
+			  Map<String, ArrayList<List<Integer>>> claimMap = survivalData.getClaims();
+			  ArrayList<List<Integer>> claims = claimMap.get(player.getWorld().getName());
 
 			  Chunk chunk = player.getChunk();
 			  int chunkX = chunk.getX();
 			  int chunkZ = chunk.getZ();
 
-			  Claim newClaim = new Claim(chunkX, chunkZ);
+			  List<Integer> newClaim = Arrays.asList(chunkX, chunkZ);
 
 			  if (claims.contains(newClaim)) {
 				messageManager.sendMessage(player, Message.CHUNK_ALREADY_CLAIMED);
