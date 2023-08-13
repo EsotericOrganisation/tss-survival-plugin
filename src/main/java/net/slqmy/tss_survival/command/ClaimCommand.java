@@ -5,6 +5,7 @@ import dev.jorel.commandapi.executors.CommandArguments;
 import net.slqmy.tss_core.datatype.Rank;
 import net.slqmy.tss_core.datatype.player.Message;
 import net.slqmy.tss_core.datatype.player.PlayerProfile;
+import net.slqmy.tss_core.datatype.player.survival.ClaimedChunk;
 import net.slqmy.tss_core.datatype.player.survival.SurvivalPlayerData;
 import net.slqmy.tss_core.manager.MessageManager;
 import net.slqmy.tss_survival.TSSSurvivalPlugin;
@@ -15,8 +16,6 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 public class ClaimCommand {
@@ -42,24 +41,29 @@ public class ClaimCommand {
 			  SurvivalPlayerData survivalData = profile.getSurvivalData();
 			  // Check if they have enough allowed claims. If not, return.
 
-			  Map<String, ArrayList<List<Integer>>> claimMap = survivalData.getClaims();
-			  ArrayList<List<Integer>> claims = claimMap.get(player.getWorld().getName());
+			  Map<String, ArrayList<ClaimedChunk>> claimMap = survivalData.getClaims();
 
 			  Chunk chunk = player.getChunk();
 			  int chunkX = chunk.getX();
 			  int chunkZ = chunk.getZ();
 
-			  List<Integer> newClaim = Arrays.asList(chunkX, chunkZ);
+			  PersistentDataContainer container = chunk.getPersistentDataContainer();
 
-			  if (claims.contains(newClaim)) {
+			  NamespacedKey chunkClaimOwner = new NamespacedKey(plugin, "chunk_claim_owner");
+			  String ownerUuid = container.get(chunkClaimOwner, PersistentDataType.STRING);
+
+			  if (ownerUuid != null) {
 				messageManager.sendMessage(player, Message.CHUNK_ALREADY_CLAIMED);
 				return;
 			  }
 
-			  PersistentDataContainer container = chunk.getPersistentDataContainer();
-			  container.set(new NamespacedKey(plugin, "chunk_claim_owner"), PersistentDataType.STRING, player.getUniqueId().toString());
+			  ClaimedChunk newClaim = new ClaimedChunk(chunkX, chunkZ, new ArrayList<>());
+			  ArrayList<ClaimedChunk> claims = claimMap.get(player.getWorld().getName());
 
 			  claims.add(newClaim);
+
+			  container.set(chunkClaimOwner, PersistentDataType.STRING, player.getUniqueId().toString());
+			  container.set(new NamespacedKey(plugin, "chunk_claim_date"), PersistentDataType.LONG, System.currentTimeMillis());
 
 			  messageManager.sendMessage(player, Message.CHUNK_CLAIMED_SUCCESSFULLY);
 			})
