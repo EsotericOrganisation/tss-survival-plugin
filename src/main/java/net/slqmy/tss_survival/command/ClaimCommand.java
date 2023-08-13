@@ -15,7 +15,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
 
 public class ClaimCommand {
 
@@ -40,13 +41,14 @@ public class ClaimCommand {
 			  SurvivalPlayerData survivalData = profile.getSurvivalData();
 			  // Check if they have enough allowed claims. If not, return.
 
-			  List<Claim> claims = survivalData.getClaims();
+			  Map<String, ArrayList<Claim>> claimMap = survivalData.getClaims();
+			  ArrayList<Claim> claims = claimMap.get(player.getWorld().getName());
 
 			  Chunk chunk = player.getChunk();
 			  int chunkX = chunk.getX();
 			  int chunkZ = chunk.getZ();
 
-			  Claim newClaim = new Claim(player.getWorld().getName(), chunkX, chunkZ);
+			  Claim newClaim = new Claim(chunkX, chunkZ);
 
 			  if (claims.contains(newClaim)) {
 				messageManager.sendMessage(player, Message.CHUNK_ALREADY_CLAIMED);
