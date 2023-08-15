@@ -221,4 +221,26 @@ public class SkillsListener implements Listener {
   public void onSkillLevelUp(@NotNull SkillLevelUpEvent event) {
 	plugin.getCore().getMessageManager().sendMessage(event.getPlayer(), Message.SKILL_LEVEL_UP,event.getSkillType().name());
   }
+
+  @EventHandler
+  public void onSkillExpGain(@NotNull SkillExperienceGainEvent event) {
+	Player player = event.getPlayer();
+
+	int gainedExp = event.getGainedExp();
+	int totalExp = event.getTotalExp();
+
+	int currentLevel = SurvivalPlayerData.experienceToLevel(totalExp);
+	int nextLevel = currentLevel + 1;
+
+	int neededExp = 50 * currentLevel * currentLevel * currentLevel + 50 * currentLevel;
+	int nextLevelNeededExp = 50 * nextLevel * nextLevel * nextLevel + 50 * nextLevel;
+
+	int bound = nextLevelNeededExp - neededExp;
+
+	player.sendActionBar(
+			Component.text(
+					"+" + gainedExp + " " + event.getSkillType().name() + " (" + (totalExp - neededExp) + "/" + bound + ")"
+			)
+	);
+  }
 }
