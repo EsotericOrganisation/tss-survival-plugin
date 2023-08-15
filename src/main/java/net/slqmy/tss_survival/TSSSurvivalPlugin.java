@@ -3,10 +3,7 @@ package net.slqmy.tss_survival;
 import net.slqmy.tss_core.TSSCorePlugin;
 import net.slqmy.tss_ranks.TSSRanksPlugin;
 import net.slqmy.tss_survival.command.*;
-import net.slqmy.tss_survival.listener.ClaimListener;
-import net.slqmy.tss_survival.listener.ConnectionListener;
-import net.slqmy.tss_survival.listener.OreMineListener;
-import net.slqmy.tss_survival.listener.SkillsListener;
+import net.slqmy.tss_survival.listener.*;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginManager;
@@ -39,12 +36,15 @@ public final class TSSSurvivalPlugin extends JavaPlugin {
 	new TrustCommand(this);
 	new UnTrustCommand(this);
 
-	new SkillsCommand();
+	new ViewTrustedPlayersCommand(this);
+
+	new SkillsCommand(this);
 
 	PluginManager pluginManager = Bukkit.getPluginManager();
-	pluginManager.registerEvents(new ConnectionListener(this), this);
+	pluginManager.registerEvents(new SurvivalConnectionListener(this), this);
 	pluginManager.registerEvents(new ClaimListener(this), this);
 	pluginManager.registerEvents(new SkillsListener(this), this);
 	pluginManager.registerEvents(new OreMineListener(this), this);
+	pluginManager.registerEvents(new SkillsMenuListener(this), this);
   }
 }
