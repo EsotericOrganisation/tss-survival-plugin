@@ -55,7 +55,8 @@ public class SkillsListener implements Listener {
 			Attribute.GENERIC_ATTACK_KNOCKBACK,
 			Attribute.GENERIC_ATTACK_SPEED,
 			Attribute.GENERIC_KNOCKBACK_RESISTANCE,
-			Attribute.GENERIC_MOVEMENT_SPEED
+			Attribute.GENERIC_MOVEMENT_SPEED,
+			Attribute.GENERIC_FOLLOW_RANGE
 	}
 	) {
 	  AttributeInstance instance = dead.getAttribute(attribute);
