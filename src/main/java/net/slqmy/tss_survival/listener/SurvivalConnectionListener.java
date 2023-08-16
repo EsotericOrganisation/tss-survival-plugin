@@ -1,6 +1,5 @@
 package net.slqmy.tss_survival.listener;
 
-import io.papermc.paper.event.entity.EntityLoadCrossbowEvent;
 import net.kyori.adventure.text.TextComponent;
 import net.minecraft.ChatFormatting;
 import net.slqmy.tss_core.datatype.player.Message;
@@ -8,7 +7,6 @@ import net.slqmy.tss_core.manager.MessageManager;
 import net.slqmy.tss_core.util.DebugUtil;
 import net.slqmy.tss_survival.TSSSurvivalPlugin;
 import org.bukkit.*;
-import org.bukkit.entity.Piglin;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
