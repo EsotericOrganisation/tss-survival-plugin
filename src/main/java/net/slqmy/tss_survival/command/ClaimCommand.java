@@ -6,8 +6,10 @@ import net.slqmy.tss_core.datatype.Rank;
 import net.slqmy.tss_core.datatype.player.Message;
 import net.slqmy.tss_core.datatype.player.PlayerProfile;
 import net.slqmy.tss_core.datatype.player.survival.ClaimedChunk;
+import net.slqmy.tss_core.datatype.player.survival.SkillType;
 import net.slqmy.tss_core.datatype.player.survival.SurvivalPlayerData;
 import net.slqmy.tss_core.manager.MessageManager;
+import net.slqmy.tss_core.util.DebugUtil;
 import net.slqmy.tss_survival.TSSSurvivalPlugin;
 import org.bukkit.Chunk;
 import org.bukkit.NamespacedKey;
@@ -39,11 +41,33 @@ public class ClaimCommand {
 			  PlayerProfile profile = plugin.getCore().getPlayerManager().getProfile(player);
 
 			  SurvivalPlayerData survivalData = profile.getSurvivalData();
-			  // Check if they have enough allowed claims. If not, return.
+
+			  double skillLevelSum = 0;
+			  SkillType[] skillTypes = SkillType.values();
+			  for (SkillType skillType : skillTypes) {
+				skillLevelSum += SurvivalPlayerData.experienceToLevel(profile.getSurvivalData().getSkillExperience(skillType));
+			  }
+			  skillLevelSum /= skillTypes.length;
+
+			  DebugUtil.log(playerRank.getName());
+			  for (Rank rank : plugin.getRanksPlugin().getRankManager().getRanks()) {
+				DebugUtil.log(rank.getName() + " " + rank.getInitialSurvivalClaimChunks());
+			  }
+
+			  int allowedClaimChunks = playerRank.getInitialSurvivalClaimChunks() + (int) Math.floor(skillLevelSum);
+
+			  DebugUtil.log(allowedClaimChunks);
 
 			  Map<String, ArrayList<ClaimedChunk>> claimMap = survivalData.getClaims();
+			  ArrayList<ClaimedChunk> claims = claimMap.get(player.getWorld().getName());
+
+			  if (allowedClaimChunks < claims.size() + 1) {
+				messageManager.sendMessage(player, Message.NOT_ENOUGH_CHUNKS);
+				return;
+			  }
 
 			  Chunk chunk = player.getChunk();
+
 			  int chunkX = chunk.getX();
 			  int chunkZ = chunk.getZ();
 
@@ -58,7 +82,6 @@ public class ClaimCommand {
 			  }
 
 			  ClaimedChunk newClaim = new ClaimedChunk(chunkX, chunkZ, new ArrayList<>());
-			  ArrayList<ClaimedChunk> claims = claimMap.get(player.getWorld().getName());
 
 			  claims.add(newClaim);
 
