@@ -3,6 +3,7 @@ package net.slqmy.tss_survival.command;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.IStringTooltip;
 import dev.jorel.commandapi.StringTooltip;
+import dev.jorel.commandapi.SuggestionInfo;
 import dev.jorel.commandapi.arguments.ArgumentSuggestions;
 import dev.jorel.commandapi.arguments.PlayerArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
@@ -17,9 +18,11 @@ import net.slqmy.tss_survival.util.ClaimUtil;
 import org.bukkit.Chunk;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,17 +30,24 @@ import java.util.UUID;
 
 public class UnTrustCommand {
 
-  public UnTrustCommand(TSSSurvivalPlugin plugin) {
+  public UnTrustCommand(@NotNull TSSSurvivalPlugin plugin) {
+	TSSCorePlugin core = plugin.getCore();
+	MessageManager messageManager = core.getMessageManager();
+
 	new CommandAPICommand("untrust")
 			.withArguments(new PlayerArgument("player"))
-			.withArguments(
-					new StringArgument("where-to-untrust")
+			.withOptionalArguments(
+					new StringArgument("where-to-trust")
 							.replaceSuggestions(
 									ArgumentSuggestions.stringsWithTooltips(
-											new IStringTooltip[]{
-													StringTooltip.ofString("all", "Revoke trust from the player in all of your claimed chunks."),
-													StringTooltip.ofString("connected", "Revoke trust from the player in all chunks connected to your current chunk."),
-													StringTooltip.ofString("chunk", "Revoke trust from the player in just the current chunk.")
+											(SuggestionInfo<CommandSender> info) -> {
+											  Player player = (Player) info.sender();
+
+											  return new IStringTooltip[]{
+													  StringTooltip.ofString("all", messageManager.getPlayerMessage(Message.UNTRUST_PLAYER_LOCATION_ALL, player).content()),
+													  StringTooltip.ofString("connected", messageManager.getPlayerMessage(Message.UNTRUST_PLAYER_LOCATION_CONNECTED, player).content()),
+													  StringTooltip.ofString("chunk", messageManager.getPlayerMessage(Message.UNTRUST_PLAYER_LOCATION_CHUNK, player).content())
+											  };
 											}
 									)
 							)
@@ -50,9 +60,6 @@ public class UnTrustCommand {
 			  PersistentDataContainer container = currentChunk.getPersistentDataContainer();
 
 			  NamespacedKey chunkClaimOwnerKey = new NamespacedKey(plugin, "chunk_claim_owner");
-
-			  TSSCorePlugin core = plugin.getCore();
-			  MessageManager messageManager = core.getMessageManager();
 
 			  UUID playerUuid = player.getUniqueId();
 
