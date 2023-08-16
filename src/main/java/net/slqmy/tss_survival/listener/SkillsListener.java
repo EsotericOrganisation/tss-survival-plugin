@@ -223,7 +223,7 @@ public class SkillsListener implements Listener {
 
   @EventHandler
   public void onSkillLevelUp(@NotNull SkillLevelUpEvent event) {
-	plugin.getCore().getMessageManager().sendMessage(event.getPlayer(), Message.SKILL_LEVEL_UP,event.getSkillType().name());
+	plugin.getCore().getMessageManager().sendMessage(event.getPlayer(), Message.SKILL_LEVEL_UP, event.getSkillType().name());
   }
 
   @EventHandler
