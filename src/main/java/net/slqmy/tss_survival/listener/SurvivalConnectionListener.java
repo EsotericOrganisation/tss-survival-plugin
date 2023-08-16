@@ -134,7 +134,12 @@ public class SurvivalConnectionListener implements Listener {
 
 	UUID playerUuid = player.getUniqueId();
 
-	claimMessageTasks.get(playerUuid).cancel();
+	BukkitTask task = claimMessageTasks.get(playerUuid);
+	if (task == null) {
+	  return;
+	}
+
+	task.cancel();
 	claimMessageTasks.remove(playerUuid);
 
 	player.getScoreboard().getObjective("survival_scoreboard").unregister();
