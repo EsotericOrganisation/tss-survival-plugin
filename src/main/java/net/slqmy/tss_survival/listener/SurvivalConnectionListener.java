@@ -149,41 +149,4 @@ public class SurvivalConnectionListener implements Listener {
   public void onSurvivalQuit(@NotNull PlayerQuitEvent event) {
 	handlePlayerSurvivalQuit(event);
   }
-
-  @EventHandler
-  public void onPiglinCrossBowCharge(@NotNull EntityLoadCrossbowEvent event) {
-	if (!(event.getEntity() instanceof Piglin)) {
-	  return;
-	}
-
-	ItemStack crossbow = event.getCrossbow();
-	CrossbowMeta meta = (CrossbowMeta) crossbow.getItemMeta();
-
-	ItemStack firework = new ItemStack(Material.FIREWORK_ROCKET);
-	FireworkMeta fireworkMeta = (FireworkMeta) firework.getItemMeta();
-
-	FireworkEffect orangeExplosion = FireworkEffect.builder()
-			.with(FireworkEffect.Type.BALL)
-			.withColor(Color.ORANGE)
-			.withFade(Color.WHITE)
-			.withTrail()
-			.build();
-
-	FireworkEffect redExplosion = FireworkEffect.builder()
-			.with(FireworkEffect.Type.BALL)
-			.withColor(Color.RED)
-			.withFade(Color.WHITE)
-			.withTrail()
-			.build();
-
-	fireworkMeta.addEffect(orangeExplosion);
-	fireworkMeta.addEffect(redExplosion);
-	fireworkMeta.setPower(1);
-
-	firework.setItemMeta(fireworkMeta);
-
-	meta.setChargedProjectiles(null);
-	meta.setChargedProjectiles(List.of(firework));
-	crossbow.setItemMeta(meta);
-  }
 }
