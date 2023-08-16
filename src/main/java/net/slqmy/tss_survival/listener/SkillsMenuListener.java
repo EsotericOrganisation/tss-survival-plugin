@@ -56,6 +56,10 @@ public class SkillsMenuListener implements Listener {
 	}
 
 	ItemMeta meta = clickedItem.getItemMeta();
+	if (meta == null) {
+	  return;
+	}
+
 	PersistentDataContainer container = meta.getPersistentDataContainer();
 
 	String arrowDirection = container.get(new NamespacedKey(plugin, "skill_exp_menu_arrow_direction"), PersistentDataType.STRING);
