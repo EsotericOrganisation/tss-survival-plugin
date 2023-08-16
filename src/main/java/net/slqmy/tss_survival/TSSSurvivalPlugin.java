@@ -46,5 +46,6 @@ public final class TSSSurvivalPlugin extends JavaPlugin {
 	pluginManager.registerEvents(new SkillsListener(this), this);
 	pluginManager.registerEvents(new OreMineListener(this), this);
 	pluginManager.registerEvents(new SkillsMenuListener(this), this);
+	pluginManager.registerEvents(new BlockListener(this), this);
   }
 }
