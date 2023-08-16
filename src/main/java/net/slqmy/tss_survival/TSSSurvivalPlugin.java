@@ -33,6 +33,8 @@ public final class TSSSurvivalPlugin extends JavaPlugin {
 	new ClaimCommand(this);
 	new UnClaimCommand(this);
 
+	new ClaimMapCommand(this);
+
 	new TrustCommand(this);
 	new UnTrustCommand(this);
 
