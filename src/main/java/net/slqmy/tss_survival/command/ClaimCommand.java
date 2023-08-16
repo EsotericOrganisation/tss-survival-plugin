@@ -2,6 +2,10 @@ package net.slqmy.tss_survival.command;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.executors.CommandArguments;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.slqmy.tss_core.TSSCorePlugin;
 import net.slqmy.tss_core.datatype.Rank;
 import net.slqmy.tss_core.datatype.player.Message;
 import net.slqmy.tss_core.datatype.player.PlayerProfile;
@@ -11,14 +15,17 @@ import net.slqmy.tss_core.datatype.player.survival.SurvivalPlayerData;
 import net.slqmy.tss_core.manager.MessageManager;
 import net.slqmy.tss_core.util.DebugUtil;
 import net.slqmy.tss_survival.TSSSurvivalPlugin;
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.NamespacedKey;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.UUID;
 
 public class ClaimCommand {
 
@@ -90,6 +97,82 @@ public class ClaimCommand {
 
 			  messageManager.sendMessage(player, Message.CHUNK_CLAIMED_SUCCESSFULLY);
 			})
+			.withSubcommand(
+					new CommandAPICommand("list")
+							.executesPlayer((Player player, CommandArguments args) -> {
+							  TSSCorePlugin core = plugin.getCore();
+							  MessageManager messageManager = core.getMessageManager();
+
+							  PlayerProfile profile = core.getPlayerManager().getProfile(player);
+							  for (ClaimedChunk chunk : profile.getSurvivalData().getClaims().get(player.getWorld().getName())) {
+								TextComponent unclaim = messageManager.getPlayerMessage(Message.UNCLAIM, player);
+								unclaim = unclaim.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/unclaim " + chunk.getX() + " " + chunk.getZ()));
+
+								player.sendMessage(
+										Component.text(
+														" [" + chunk.getX() + ", " + chunk.getZ() + "] - "
+												).append(
+														Component.text(
+																chunk.getTrustedPlayers().size() + " "
+														)
+												).append(
+														messageManager.getPlayerMessage(chunk.getTrustedPlayers().size() == 1 ? Message.TRUSTED_PLAYER : Message.TRUSTED_PLAYERS, player)
+												)
+												.appendSpace()
+												.append(
+														Component.text(
+																"["
+														).append(
+																unclaim
+														).append(
+																Component.text(
+																		"]"
+																)
+														)
+												)
+								);
+							  }
+							})
+			)
+			.withSubcommand(
+					new CommandAPICommand("info")
+							.executesPlayer((Player player, CommandArguments args) -> {
+							  Chunk chunk = player.getChunk();
+							  PersistentDataContainer container = chunk.getPersistentDataContainer();
+
+							  String ownerUuidString = container.get(new NamespacedKey(plugin, "chunk_claim_owner"), PersistentDataType.STRING);
+
+							  TSSCorePlugin core = plugin.getCore();
+							  MessageManager messageManager = core.getMessageManager();
+							  if (ownerUuidString == null) {
+								messageManager.sendMessage(player, Message.CHUNK_NOT_CLAIMED);
+								return;
+							  }
+
+							  UUID ownerUuid = UUID.fromString(ownerUuidString);
+							  if (!player.getUniqueId().equals(ownerUuid)) {
+								messageManager.sendMessage(player, Message.NOT_YOUR_CHUNK);
+								return;
+							  }
+
+							  int x = chunk.getX();
+							  int z = chunk.getZ();
+
+							  PlayerProfile profile = core.getPlayerManager().getProfile(player);
+							  for (ClaimedChunk claimedChunk : profile.getSurvivalData().getClaims().get(player.getWorld().getName())) {
+								if (claimedChunk.getX() == x && claimedChunk.getZ() == z) {
+								  for (UUID uuid : claimedChunk.getTrustedPlayers()) {
+									OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
+									player.sendMessage(Component.text(
+											offlinePlayer.getName()
+									));
+								  }
+
+								  return;
+								}
+							  }
+							})
+			)
 			.register();
   }
 }
