@@ -1,8 +1,11 @@
 package net.slqmy.tss_survival.listener;
 
+import net.kyori.adventure.text.Component;
 import net.slqmy.tss_core.datatype.player.Message;
 import net.slqmy.tss_core.datatype.player.PlayerProfile;
 import net.slqmy.tss_core.datatype.player.survival.SkillType;
+import net.slqmy.tss_core.datatype.player.survival.SurvivalPlayerData;
+import net.slqmy.tss_core.event.custom_event.SkillExperienceGainEvent;
 import net.slqmy.tss_core.event.custom_event.SkillLevelUpEvent;
 import net.slqmy.tss_survival.FarmingSkillExpReward;
 import net.slqmy.tss_survival.MiningSkillExpReward;
