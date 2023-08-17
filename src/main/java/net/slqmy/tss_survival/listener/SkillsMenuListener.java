@@ -55,6 +55,12 @@ public class SkillsMenuListener implements Listener {
 	  return;
 	}
 
+	Player player = (Player) event.getWhoClicked();
+	if (event.getRawSlot() == 49) {
+	  new SkillsMenu(player, plugin);
+	  return;
+	}
+
 	ItemMeta meta = clickedItem.getItemMeta();
 	if (meta == null) {
 	  return;
@@ -70,8 +76,6 @@ public class SkillsMenuListener implements Listener {
 	int shift = container.get(new NamespacedKey(plugin, "skill_exp_menu_shift"), PersistentDataType.INTEGER);
 	String skillString = container.get(new NamespacedKey(plugin, "skill_exp_menu_skill"), PersistentDataType.STRING);
 	SkillType skillType = SkillType.valueOf(skillString);
-
-	Player player = (Player) event.getWhoClicked();
 
 	switch (arrowDirection) {
 	  case "forward" -> new SkillExpMenu(player, skillType, shift + 1, plugin);
