@@ -1,12 +1,18 @@
 package net.slqmy.tss_survival.listener;
 
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.title.TitlePart;
+import net.slqmy.tss_core.TSSCorePlugin;
+import net.slqmy.tss_core.datatype.Colour;
 import net.slqmy.tss_core.datatype.player.Message;
 import net.slqmy.tss_core.datatype.player.PlayerProfile;
 import net.slqmy.tss_core.datatype.player.survival.SkillType;
 import net.slqmy.tss_core.datatype.player.survival.SurvivalPlayerData;
 import net.slqmy.tss_core.event.custom_event.SkillExperienceGainEvent;
 import net.slqmy.tss_core.event.custom_event.SkillLevelUpEvent;
+import net.slqmy.tss_core.manager.MessageManager;
 import net.slqmy.tss_survival.FarmingSkillExpReward;
 import net.slqmy.tss_survival.MiningSkillExpReward;
 import net.slqmy.tss_survival.TSSSurvivalPlugin;
@@ -223,7 +229,32 @@ public class SkillsListener implements Listener {
 
   @EventHandler
   public void onSkillLevelUp(@NotNull SkillLevelUpEvent event) {
-	plugin.getCore().getMessageManager().sendMessage(event.getPlayer(), Message.SKILL_LEVEL_UP, event.getSkillType().name());
+	Player player = event.getPlayer();
+	SkillType skillType = event.getSkillType();
+
+	TSSCorePlugin core = plugin.getCore();
+	MessageManager messageManager = core.getMessageManager();
+
+	Component display = skillType.getDisplayItem(player, core).getItemMeta().displayName();
+
+	messageManager.sendMessage(player, Message.SKILL_LEVEL_UP, display);
+	player.sendTitlePart(TitlePart.TITLE, display);
+	player.sendTitlePart(TitlePart.SUBTITLE, Component.text(
+			event.getOldLevel(),
+			Colour.GREY
+	).appendSpace().append(
+			Component.text(
+					"->",
+					Colour.YELLOW
+			)
+	).appendSpace().append(
+			Component.text(
+					event.getNewLevel(),
+					Colour.SLIME
+			)
+	));
+
+	player.playSound(Sound.sound(Key.key("entity.player.levelup"), Sound.Source.AMBIENT, 1.0F, 1.0F));
   }
 
   @EventHandler
@@ -243,8 +274,38 @@ public class SkillsListener implements Listener {
 
 	player.sendActionBar(
 			Component.text(
-					"+" + gainedExp + " " + event.getSkillType().name() + " (" + (totalExp - neededExp) + "/" + bound + ")"
+					"+" + gainedExp,
+					Colour.SLIME
+			).appendSpace().append(
+					event.getSkillType().getDisplayItem(player, plugin.getCore()).getItemMeta().displayName()
+			).appendSpace().append(
+					Component.text(
+							"(",
+							Colour.GREY
+					)
+			).append(
+					Component.text(
+							totalExp - neededExp,
+							Colour.YELLOW
+					)
+			).append(
+					Component.text(
+							"/",
+							Colour.WHITE
+					)
+			).append(
+					Component.text(
+							bound,
+							Colour.YELLOW
+					)
+			).append(
+					Component.text(
+							")",
+							Colour.GREY
+					)
 			)
 	);
+
+	player.playSound(Sound.sound(Key.key("entity.experience_orb.pickup"), Sound.Source.AMBIENT, 1.0F, 1.0F));
   }
 }
