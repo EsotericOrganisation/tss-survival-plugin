@@ -1,6 +1,7 @@
 package net.slqmy.tss_survival.menu;
 
 import net.slqmy.tss_core.datatype.player.survival.SkillType;
+import net.slqmy.tss_core.util.InventoryUtil;
 import net.slqmy.tss_survival.TSSSurvivalPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -27,6 +28,7 @@ public class SkillsMenu {
 	  inventory.addItem(displayItem);
 	}
 
+	InventoryUtil.makeStatic(inventory, plugin.getCore());
 	player.openInventory(inventory);
   }
 }

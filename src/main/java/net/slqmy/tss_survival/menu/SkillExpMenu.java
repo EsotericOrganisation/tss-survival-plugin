@@ -10,6 +10,7 @@ import net.slqmy.tss_core.datatype.player.PlayerProfile;
 import net.slqmy.tss_core.datatype.player.survival.SkillType;
 import net.slqmy.tss_core.datatype.player.survival.SurvivalPlayerData;
 import net.slqmy.tss_core.manager.MessageManager;
+import net.slqmy.tss_core.util.InventoryUtil;
 import net.slqmy.tss_core.util.NumberUtil;
 import net.slqmy.tss_survival.TSSSurvivalPlugin;
 import org.bukkit.Bukkit;
@@ -184,6 +185,7 @@ public class SkillExpMenu {
 	tipsTricks.setItemMeta(tipsTricksMeta);
 	inventory.setItem(5, tipsTricks);
 
+	InventoryUtil.makeStatic(inventory, plugin.getCore());
 	player.openInventory(inventory);
   }
 }
