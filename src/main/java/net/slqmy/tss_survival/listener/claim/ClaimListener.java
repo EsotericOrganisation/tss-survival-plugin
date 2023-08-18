@@ -76,11 +76,17 @@ public class ClaimListener implements Listener {
 	  return false;
 	}
 
-	if (!UUID.fromString(chunkOwnerUuidString).equals(player.getUniqueId())) {
-	  plugin.getCore().getMessageManager().sendMessage(player, Message.CANT_INTERACT_BECAUSE_CHUNK_CLAIMED, Bukkit.getOfflinePlayer(UUID.fromString(chunkOwnerUuidString)).getName());
-	  return true;
+	UUID playerUuid = player.getUniqueId();
+	if (UUID.fromString(chunkOwnerUuidString).equals(playerUuid)) {
+	  return false;
 	}
 
-	return false;
+	Boolean playerIsTrusted = container.get(new NamespacedKey(plugin, playerUuid + "_is_trusted"), PersistentDataType.BOOLEAN);
+	if (playerIsTrusted != null) {
+	  return false;
+	}
+
+	plugin.getCore().getMessageManager().sendMessage(player, Message.CANT_INTERACT_BECAUSE_CHUNK_CLAIMED, Bukkit.getOfflinePlayer(UUID.fromString(chunkOwnerUuidString)).getName());
+	return true;
   }
 }
