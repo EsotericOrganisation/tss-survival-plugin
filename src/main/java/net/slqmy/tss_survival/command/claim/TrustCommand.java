@@ -155,7 +155,7 @@ public class TrustCommand {
 				trustedPlayers.add(trustedUuid);
 			  }
 
-			  messageManager.sendMessage(player, Message.PLAYER_SUCCESSFULLY_TRUSTED);
+			  messageManager.sendMessage(player, Message.PLAYER_SUCCESSFULLY_TRUSTED, trustedPlayer.getName());
 			})
 			.register();
   }
