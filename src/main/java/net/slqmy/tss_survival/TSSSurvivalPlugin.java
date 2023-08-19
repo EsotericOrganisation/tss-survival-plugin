@@ -17,11 +17,16 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.HashMap;
+import java.util.UUID;
+
 public final class TSSSurvivalPlugin extends JavaPlugin {
 
   private final TSSCorePlugin core = (TSSCorePlugin) Bukkit.getPluginManager().getPlugin("TSS-Core");
 
   private final TSSRanksPlugin ranksPlugin = (TSSRanksPlugin) Bukkit.getPluginManager().getPlugin("TSS-Ranks");
+
+  private final HashMap<UUID, UUID> outGoingTradeRequests = new HashMap<>();
 
   public TSSRanksPlugin getRanksPlugin() {
 	return ranksPlugin;
@@ -29,6 +34,10 @@ public final class TSSSurvivalPlugin extends JavaPlugin {
 
   public TSSCorePlugin getCore() {
 	return core;
+  }
+
+  public HashMap<UUID, UUID> getOutGoingTradeRequests() {
+	return outGoingTradeRequests;
   }
 
   @Override
@@ -49,6 +58,8 @@ public final class TSSSurvivalPlugin extends JavaPlugin {
 
 	new SkillsCommand(this);
 
+	new TradeCommand(this);
+
 	PluginManager pluginManager = Bukkit.getPluginManager();
 	pluginManager.registerEvents(new SurvivalConnectionListener(this), this);
 	pluginManager.registerEvents(new ClaimListener(this), this);
@@ -56,5 +67,6 @@ public final class TSSSurvivalPlugin extends JavaPlugin {
 	pluginManager.registerEvents(new OreMineListener(this), this);
 	pluginManager.registerEvents(new SkillsMenuListener(this), this);
 	pluginManager.registerEvents(new BlockListener(this), this);
+	pluginManager.registerEvents(new TradeListener(this), this);
   }
 }
