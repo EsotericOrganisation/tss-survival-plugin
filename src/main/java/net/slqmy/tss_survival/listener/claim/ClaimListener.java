@@ -15,6 +15,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -28,6 +29,16 @@ public class ClaimListener implements Listener {
 
   public ClaimListener(TSSSurvivalPlugin plugin) {
 	this.plugin = plugin;
+  }
+
+  @EventHandler(priority = EventPriority.LOW)
+  public void onClaimedChunkBlockPlace(@NotNull BlockPlaceEvent event) {
+	event.setCancelled(handleClaimedChunkInteract(event.getBlock().getChunk(), event.getPlayer()));
+  }
+
+  @EventHandler(priority = EventPriority.LOW)
+  public void onClaimedBlockBreak(@NotNull BlockBreakEvent event) {
+	event.setCancelled(handleClaimedChunkInteract(event.getBlock().getChunk(), event.getPlayer()));
   }
 
   @EventHandler
@@ -58,13 +69,8 @@ public class ClaimListener implements Listener {
 	event.setCancelled(handleClaimedChunkInteract(chunk, player));
   }
 
-  @EventHandler(priority = EventPriority.LOW)
-  public void onClaimedBlockBreak(@NotNull BlockBreakEvent event) {
-	event.setCancelled(handleClaimedChunkInteract(event.getBlock().getChunk(), event.getPlayer()));
-  }
-
   @EventHandler
-  public void onClaimedChunkBlockPlace(BlockPlaceEvent event) {
+  public void onClaimedChunkSignEdit(@NotNull SignChangeEvent event) {
 	event.setCancelled(handleClaimedChunkInteract(event.getBlock().getChunk(), event.getPlayer()));
   }
 
