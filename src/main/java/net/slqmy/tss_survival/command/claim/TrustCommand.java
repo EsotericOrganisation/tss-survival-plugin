@@ -123,8 +123,13 @@ public class TrustCommand {
 				  messageManager.sendMessage(player, Message.PLAYER_SUCCESSFULLY_TRUSTED);
 				  return;
 				}
-				case "connected" ->
-				  chunksToTrustPlayerIn = ClaimUtil.getConnectedClaims(chunkClaimOwnerKey, trustKey, player, true, chunksToTrustPlayerIn, new int[] {x, z});
+				case "connected" -> {
+				  chunksToTrustPlayerIn = ClaimUtil.getConnectedClaims(chunkClaimOwnerKey, trustKey, player, true, chunksToTrustPlayerIn, new int[]{x, z});
+				  if (chunksToTrustPlayerIn == null) {
+					messageManager.sendMessage(player, Message.FOUND_NO_CHUNKS);
+					return;
+				  }
+				}
 				case "chunk" -> {
 				  chunksToTrustPlayerIn = List.of(new int[]{x, z});
 				  container.set(trustKey, PersistentDataType.BOOLEAN, true);
@@ -132,8 +137,6 @@ public class TrustCommand {
 			  }
 
 			  for (ClaimedChunk claimedChunk : claimedChunks) {
-				assert chunksToTrustPlayerIn != null;
-
 				boolean contains = false;
 				for (int[] chunk : chunksToTrustPlayerIn) {
 				  if (chunk[0] == claimedChunk.getX() && chunk[1] == claimedChunk.getZ()) {
