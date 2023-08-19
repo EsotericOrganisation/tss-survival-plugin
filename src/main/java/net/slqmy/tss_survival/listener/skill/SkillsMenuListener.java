@@ -1,8 +1,10 @@
-package net.slqmy.tss_survival.listener;
+package net.slqmy.tss_survival.listener.skill;
 
 import net.slqmy.tss_core.datatype.player.survival.SkillType;
+import net.slqmy.tss_core.util.DebugUtil;
 import net.slqmy.tss_survival.TSSSurvivalPlugin;
-import net.slqmy.tss_survival.menu.SkillExpMenu;
+import net.slqmy.tss_survival.menu.skill.SkillExpMenu;
+import net.slqmy.tss_survival.menu.skill.SkillsMenu;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -23,43 +25,13 @@ public class SkillsMenuListener implements Listener {
   }
 
   @EventHandler
-  public void onSkillsMenuInteract(@NotNull InventoryClickEvent event) {
-	ItemStack clickedItem = event.getCurrentItem();
-	if (null == clickedItem) {
-	  return;
-	}
-
-	ItemMeta meta = clickedItem.getItemMeta();
-	if (null == meta) {
-	  return;
-	}
-
-	PersistentDataContainer container = meta.getPersistentDataContainer();
-
-	String skillTypeString = container.get(new NamespacedKey(plugin, "skill"), PersistentDataType.STRING);
-
-	SkillType skillType;
-	try {
-	  skillType = SkillType.valueOf(skillTypeString);
-	} catch (IllegalArgumentException | NullPointerException exception) {
-	  return;
-	}
-
-	new SkillExpMenu((Player) event.getWhoClicked(), skillType, 0, plugin);
-  }
-
-  @EventHandler
   public void onSkillsMenuPageNavigate(@NotNull InventoryClickEvent event) {
 	ItemStack clickedItem = event.getCurrentItem();
-	if (null == clickedItem) {
+	if (clickedItem == null) {
 	  return;
 	}
 
 	Player player = (Player) event.getWhoClicked();
-	if (event.getRawSlot() == 49) {
-	  new SkillsMenu(player, plugin);
-	  return;
-	}
 
 	ItemMeta meta = clickedItem.getItemMeta();
 	if (meta == null) {
@@ -74,7 +46,7 @@ public class SkillsMenuListener implements Listener {
 	}
 
 	String arrowDirection = container.get(new NamespacedKey(plugin, "skill_exp_menu_arrow_direction"), PersistentDataType.STRING);
-	if (null == arrowDirection) {
+	if (arrowDirection == null) {
 	  return;
 	}
 
@@ -86,5 +58,36 @@ public class SkillsMenuListener implements Listener {
 	  case "forward" -> new SkillExpMenu(player, skillType, shift + 1, plugin);
 	  case "backward" -> new SkillExpMenu(player, skillType, shift - 1, plugin);
 	}
+  }
+
+  @EventHandler
+  public void onSkillsMenuInteract(@NotNull InventoryClickEvent event) {
+	ItemStack clickedItem = event.getCurrentItem();
+	if (clickedItem == null) {
+	  return;
+	}
+
+	ItemMeta meta = clickedItem.getItemMeta();
+	if (meta == null) {
+	  return;
+	}
+
+	PersistentDataContainer container = meta.getPersistentDataContainer();
+	String skillTypeString = container.get(new NamespacedKey(plugin, "skill"), PersistentDataType.STRING);
+
+	DebugUtil.log("SKILL TYPE: " + skillTypeString);
+
+	if (skillTypeString == null) {
+	  return;
+	}
+
+	SkillType skillType;
+	try {
+	  skillType = SkillType.valueOf(skillTypeString);
+	} catch (IllegalArgumentException exception) {
+	  return;
+	}
+
+	new SkillExpMenu((Player) event.getWhoClicked(), skillType, 0, plugin);
   }
 }

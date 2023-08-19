@@ -1,4 +1,4 @@
-package net.slqmy.tss_survival.menu;
+package net.slqmy.tss_survival.menu.skill;
 
 import net.slqmy.tss_core.datatype.player.survival.SkillType;
 import net.slqmy.tss_core.util.InventoryUtil;

@@ -1,4 +1,4 @@
-package net.slqmy.tss_survival.listener;
+package net.slqmy.tss_survival.listener.claim;
 
 import net.slqmy.tss_core.datatype.player.Message;
 import net.slqmy.tss_core.util.DebugUtil;

@@ -1,4 +1,4 @@
-package net.slqmy.tss_survival.listener;
+package net.slqmy.tss_survival.listener.skill;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
@@ -102,7 +102,7 @@ public class SkillsListener implements Listener {
 	Material blockType = brokenBlock.getType();
 	String blockTypeString = blockType.name();
 
-	int gainedExp = 0;
+	int gainedExp;
 
 	if (blockTypeString.endsWith("_LOG") || blockTypeString.endsWith("_WOOD")) {
 	  if (blockTypeString.contains("ACACIA_") || blockTypeString.contains("MANGROVE_") || blockTypeString.contains("CHERRY_")) {
@@ -271,7 +271,6 @@ public class SkillsListener implements Listener {
 	int nextLevelNeededExp = 50 * nextLevel * nextLevel * nextLevel + 50 * nextLevel;
 
 	int bound = nextLevelNeededExp - neededExp;
-
 	player.sendActionBar(
 			Component.text(
 					"+" + gainedExp,

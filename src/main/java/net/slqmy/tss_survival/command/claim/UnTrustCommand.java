@@ -1,4 +1,4 @@
-package net.slqmy.tss_survival.command;
+package net.slqmy.tss_survival.command.claim;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.IStringTooltip;
@@ -54,7 +54,9 @@ public class UnTrustCommand {
 			)
 			.executesPlayer((Player player, CommandArguments args) -> {
 			  String whereToSearch = (String) args.get("where-to-untrust");
-			  assert whereToSearch != null;
+			  if (whereToSearch == null) {
+				whereToSearch = "connected";
+			  }
 
 			  Chunk currentChunk = player.getChunk();
 			  PersistentDataContainer container = currentChunk.getPersistentDataContainer();
@@ -63,7 +65,7 @@ public class UnTrustCommand {
 
 			  UUID playerUuid = player.getUniqueId();
 
-			  if (!whereToSearch.equals("all")) {
+			  if (!"all".equals(whereToSearch)) {
 				String ownerUuidString = container.get(chunkClaimOwnerKey, PersistentDataType.STRING);
 
 				if (ownerUuidString == null) {
@@ -117,7 +119,7 @@ public class UnTrustCommand {
 				  return;
 				}
 				case "connected" ->
-						chunksToUntrustPlayerIn = ClaimUtil.getConnectedClaims(chunkClaimOwnerKey, trustKey, player, false, chunksToUntrustPlayerIn, new int[] {x, z});
+						chunksToUntrustPlayerIn = ClaimUtil.getConnectedClaims(chunkClaimOwnerKey, trustKey, player, false, chunksToUntrustPlayerIn, new int[]{x, z});
 				case "chunk" -> {
 				  chunksToUntrustPlayerIn = List.of(new int[]{x, z});
 				  container.remove(trustKey);
@@ -145,4 +147,5 @@ public class UnTrustCommand {
 			  messageManager.sendMessage(player, Message.PLAYER_SUCCESSFULLY_UNTRUSTED);
 			})
 			.register();
-  }}
+  }
+}

@@ -1,4 +1,4 @@
-package net.slqmy.tss_survival.command;
+package net.slqmy.tss_survival.command.claim;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.IStringTooltip;
@@ -65,7 +65,7 @@ public class TrustCommand {
 
 			  UUID playerUuid = player.getUniqueId();
 
-			  if (!whereToSearch.equals("all")) {
+			  if (!"all".equals(whereToSearch)) {
 				String ownerUuidString = container.get(chunkClaimOwnerKey, PersistentDataType.STRING);
 
 				if (ownerUuidString == null) {

@@ -4,7 +4,6 @@ import net.kyori.adventure.text.TextComponent;
 import net.minecraft.ChatFormatting;
 import net.slqmy.tss_core.datatype.player.Message;
 import net.slqmy.tss_core.manager.MessageManager;
-import net.slqmy.tss_core.util.DebugUtil;
 import net.slqmy.tss_survival.TSSSurvivalPlugin;
 import net.slqmy.tss_survival.map.MapClaimRenderer;
 import org.bukkit.*;
@@ -49,9 +48,6 @@ public class SurvivalConnectionListener implements Listener {
 	List<String> survivalWorlds = plugin.getCore().getSurvivalWorldNames();
 	Location from = event.getFrom();
 	Location to = event.getTo();
-
-	DebugUtil.log("FROM: " + from.getWorld().getName());
-	DebugUtil.log("TO: " + to.getWorld().getName());
 
 	if (!survivalWorlds.contains(to.getWorld().getName()) || survivalWorlds.contains(from.getWorld().getName())) {
 	  return;
@@ -185,8 +181,6 @@ public class SurvivalConnectionListener implements Listener {
 	List<String> survivalWorlds = plugin.getCore().getSurvivalWorldNames();
 	Location to = event.getTo();
 
-	DebugUtil.log("TO: " + to.getWorld().getName());
-
 	if (survivalWorlds.contains(to.getWorld().getName())) {
 	  return;
 	}
@@ -196,8 +190,6 @@ public class SurvivalConnectionListener implements Listener {
 
   private void handlePlayerSurvivalQuit(@NotNull PlayerEvent event) {
 	Player player = event.getPlayer();
-
-	DebugUtil.log("PLAYER WORLD: " + player.getWorld().getName());
 
 	if (!plugin.getCore().getSurvivalWorldNames().contains(player.getWorld().getName())) {
 	  return;

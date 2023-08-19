@@ -1,4 +1,4 @@
-package net.slqmy.tss_survival.menu;
+package net.slqmy.tss_survival.menu.skill;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;

@@ -1,4 +1,4 @@
-package net.slqmy.tss_survival.command;
+package net.slqmy.tss_survival.command.claim;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.executors.CommandArguments;
@@ -13,7 +13,6 @@ import net.slqmy.tss_core.datatype.player.survival.ClaimedChunk;
 import net.slqmy.tss_core.datatype.player.survival.SkillType;
 import net.slqmy.tss_core.datatype.player.survival.SurvivalPlayerData;
 import net.slqmy.tss_core.manager.MessageManager;
-import net.slqmy.tss_core.util.DebugUtil;
 import net.slqmy.tss_survival.TSSSurvivalPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -56,14 +55,7 @@ public class ClaimCommand {
 			  }
 			  skillLevelSum /= skillTypes.length;
 
-			  DebugUtil.log(playerRank.getName());
-			  for (Rank rank : plugin.getRanksPlugin().getRankManager().getRanks()) {
-				DebugUtil.log(rank.getName() + " " + rank.getInitialSurvivalClaimChunks());
-			  }
-
 			  int allowedClaimChunks = playerRank.getInitialSurvivalClaimChunks() + (int) Math.floor(skillLevelSum);
-
-			  DebugUtil.log(allowedClaimChunks);
 
 			  Map<String, ArrayList<ClaimedChunk>> claimMap = survivalData.getClaims();
 			  ArrayList<ClaimedChunk> claims = claimMap.get(player.getWorld().getName());

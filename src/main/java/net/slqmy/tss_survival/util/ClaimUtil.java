@@ -10,20 +10,24 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
 
 public class ClaimUtil {
+
   @Nullable
   public static List<int[]> getConnectedClaims(NamespacedKey chunkClaimOwnerKey, NamespacedKey trustKey, Player claimOwner, boolean trustPlayer, @NotNull List<int[]> currentChunks, BlockFace currentDirection, @NotNull int[] previousChunk) {
 	int newChunkX = previousChunk[0] + (currentDirection == BlockFace.EAST ? 1 : currentDirection == BlockFace.WEST ? -1 : 0);
 	int newChunkZ = previousChunk[1] + (currentDirection == BlockFace.SOUTH ? 1 : currentDirection == BlockFace.NORTH ? -1 : 0);
 
-	int[] currentChunk = new int[] {newChunkX, newChunkZ};
+	int[] currentChunk = {newChunkX, newChunkZ};
 
 	for (int[] chunk : currentChunks) {
 	  if (chunk[0] == currentChunk[0] && chunk[1] == currentChunk[1]) {
 		DebugUtil.log("Chunk already contained!");
-		return  null;
+		return null;
 	  }
 	}
 
@@ -73,6 +77,6 @@ public class ClaimUtil {
 
   @Nullable
   public static List<int[]> getConnectedClaims(NamespacedKey chunkClaimOwnerKey, NamespacedKey trustKey, Player claimOwner, boolean trustPlayer, @NotNull List<int[]> currentChunks, @NotNull int[] previousChunk) {
-	return getConnectedClaims(chunkClaimOwnerKey, trustKey, claimOwner, trustPlayer, currentChunks,null, previousChunk);
+	return getConnectedClaims(chunkClaimOwnerKey, trustKey, claimOwner, trustPlayer, currentChunks, null, previousChunk);
   }
 }

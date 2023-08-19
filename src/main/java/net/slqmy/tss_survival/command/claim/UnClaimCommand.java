@@ -1,4 +1,4 @@
-package net.slqmy.tss_survival.command;
+package net.slqmy.tss_survival.command.claim;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.IStringTooltip;
