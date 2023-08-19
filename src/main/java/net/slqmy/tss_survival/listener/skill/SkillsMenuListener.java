@@ -68,6 +68,11 @@ public class SkillsMenuListener implements Listener {
 
 	PersistentDataContainer container = meta.getPersistentDataContainer();
 
+	if (event.getRawSlot() == 49 && container.get(new NamespacedKey(plugin, "is_skills_exp_menu_close_button"), PersistentDataType.BOOLEAN) != null) {
+	  new SkillsMenu(player, plugin);
+	  return;
+	}
+
 	String arrowDirection = container.get(new NamespacedKey(plugin, "skill_exp_menu_arrow_direction"), PersistentDataType.STRING);
 	if (null == arrowDirection) {
 	  return;

@@ -147,6 +147,10 @@ public class SkillExpMenu {
 	ItemStack closeButton = new ItemStack(Material.BARRIER);
 	ItemMeta closeMeta = closeButton.getItemMeta();
 	closeMeta.displayName(messageManager.getPlayerMessage(Message.CLOSE, player).decoration(TextDecoration.ITALIC, false));
+
+	PersistentDataContainer closeButtonContainer = closeMeta.getPersistentDataContainer();
+	closeButtonContainer.set(new NamespacedKey(plugin, "is_skills_exp_menu_close_button"), PersistentDataType.BOOLEAN, true);
+
 	closeButton.setItemMeta(closeMeta);
 	inventory.setItem(49, closeButton);
 
