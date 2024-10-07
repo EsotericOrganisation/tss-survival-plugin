@@ -1,16 +1,18 @@
-name: TSS-Survival
+name: tss-survival-plugin
 version: '0.1'
-main: net.slqmy.tss_survival.TSSSurvivalPlugin
-api-version: '1.20'
-prefix: TSS-Survival
+main: org.esoteric_organisation.tss_survival_plugin.TSSSurvivalPlugin
+api-version: '1.21'
+prefix: TSS-Survival-Plugin
 dependencies:
   server:
-    TSS-Core:
+    tss-core-plugin:
       required: true
       load: BEFORE
-    TSS-Ranks:
+    tss-ranks-plugin:
       required: true
       load: BEFORE
 
-author: slqmy
+author: Esoteric Organisation
+contributors:
+  - Esoteric Enderman
 description: The plugin behind all the survival features of The Slimy Swamp.

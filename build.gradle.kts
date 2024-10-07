@@ -7,7 +7,7 @@ plugins {
   id("xyz.jpenilla.resource-factory-bukkit-convention") version "1.1.1" // Generates plugin.yml based on the Gradle config
 }
 
-group = "net.slqmy"
+group = "org.esoteric_organisation"
 version = "0.1"
 description = "The plugin behind all the survival features of The Slimy Swamp."
 
@@ -38,8 +38,8 @@ tasks {
 }
 
 bukkitPluginYaml {
-  main = "net.slqmy.tss_survival.TSSSurvivalPlugin"
+  main = "org.esoteric_organisation.tss_survival_plugin.TSSSurvivalPlugin"
   load = BukkitPluginYaml.PluginLoadOrder.STARTUP
-  authors.add("Slqmy")
+  authors.addAll("Esoteric Organisation", "Esoteric Enderman")
   apiVersion = "1.21"
 }
