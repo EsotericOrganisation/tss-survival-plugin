@@ -9,7 +9,7 @@ plugins {
 
 group = "org.esoteric_organisation"
 version = "0.1"
-description = "The plugin behind all the survival features of The Slimy Swamp."
+description = "The Minecraft plugin behind all the survival features of The Slimy Swamp Minecraft server."
 
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(21))
@@ -42,5 +42,6 @@ bukkitPluginYaml {
   main = "org.esoteric_organisation.tss_survival_plugin.TSSSurvivalPlugin"
   load = BukkitPluginYaml.PluginLoadOrder.STARTUP
   authors.addAll("Esoteric Organisation", "Esoteric Enderman")
+  description = project.description
   apiVersion = "1.21"
 }
