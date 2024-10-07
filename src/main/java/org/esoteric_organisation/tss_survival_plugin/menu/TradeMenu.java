@@ -1,7 +1,7 @@
 package org.esoteric_organisation.tss_survival_plugin.menu;
 
-import net.slqmy.tss_core.datatype.player.Message;
-import net.slqmy.tss_core.util.InventoryUtil;
+import org.esoteric_organisation.tss_core_plugin.datatype.player.Message;
+import org.esoteric_organisation.tss_core_plugin.util.InventoryUtil;
 import org.esoteric_organisation.tss_survival_plugin.TSSSurvivalPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

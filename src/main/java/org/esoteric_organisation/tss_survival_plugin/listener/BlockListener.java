@@ -1,6 +1,6 @@
 package org.esoteric_organisation.tss_survival_plugin.listener;
 
-import net.slqmy.tss_core.datatype.player.Message;
+import org.esoteric_organisation.tss_core_plugin.datatype.player.Message;
 import org.esoteric_organisation.tss_survival_plugin.TSSSurvivalPlugin;
 import org.bukkit.Chunk;
 import org.bukkit.Material;

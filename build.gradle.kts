@@ -17,11 +17,12 @@ java {
 
 repositories {
     mavenCentral()
+    maven("https://jitpack.io")
 }
 
 dependencies {
-    compileOnly(files("../TSS-Core/build/libs/tss_core-0.1-dev-all.jar"))
-    compileOnly(files("../TSS-Ranks/build/libs/tss_ranks-0.1-dev.jar"))
+    compileOnly("com.github.EsotericOrganisation:tss-core-plugin:0.1.6:dev-all")
+    compileOnly("com.github.EsotericOrganisation:tss-ranks-plugin:0.1.1:dev")
 
     paperweight.paperDevBundle("1.21-R0.1-SNAPSHOT")
 }

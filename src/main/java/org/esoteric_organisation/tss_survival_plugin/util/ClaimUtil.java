@@ -1,6 +1,6 @@
 package org.esoteric_organisation.tss_survival_plugin.util;
 
-import net.slqmy.tss_core.util.DebugUtil;
+import org.esoteric_organisation.tss_core_plugin.util.DebugUtil;
 import org.bukkit.Chunk;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.BlockFace;

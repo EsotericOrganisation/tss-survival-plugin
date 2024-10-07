@@ -1,10 +1,9 @@
 package org.esoteric_organisation.tss_survival_plugin;
 
-import net.slqmy.tss_core.TSSCorePlugin;
-import net.slqmy.tss_ranks.TSSRanksPlugin;
+import org.esoteric_organisation.tss_core_plugin.TSSCorePlugin;
+import org.esoteric_organisation.tss_ranks_plugin.TSSRanksPlugin;
 import org.esoteric_organisation.tss_survival_plugin.command.SkillsCommand;
 import org.esoteric_organisation.tss_survival_plugin.command.TradeCommand;
-import net.slqmy.tss_survival.command.claim.*;
 import org.esoteric_organisation.tss_survival_plugin.command.claim.*;
 import org.esoteric_organisation.tss_survival_plugin.listener.BlockListener;
 import org.esoteric_organisation.tss_survival_plugin.listener.OreMineListener;

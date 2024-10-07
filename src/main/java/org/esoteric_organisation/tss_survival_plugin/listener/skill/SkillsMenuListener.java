@@ -1,7 +1,7 @@
 package org.esoteric_organisation.tss_survival_plugin.listener.skill;
 
-import net.slqmy.tss_core.datatype.player.survival.SkillType;
-import net.slqmy.tss_core.util.DebugUtil;
+import org.esoteric_organisation.tss_core_plugin.datatype.player.survival.SkillType;
+import org.esoteric_organisation.tss_core_plugin.util.DebugUtil;
 import org.esoteric_organisation.tss_survival_plugin.TSSSurvivalPlugin;
 import org.esoteric_organisation.tss_survival_plugin.menu.skill.SkillExpMenu;
 import org.esoteric_organisation.tss_survival_plugin.menu.skill.SkillsMenu;
