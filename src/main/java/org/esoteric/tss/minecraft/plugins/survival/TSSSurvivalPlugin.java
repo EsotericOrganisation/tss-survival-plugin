@@ -42,11 +42,6 @@ public final class TSSSurvivalPlugin extends JavaPlugin {
 
   @Override
   public void onEnable() {
-	YamlConfiguration config = (YamlConfiguration) getConfig();
-
-	config.options().copyDefaults();
-	saveDefaultConfig();
-
 	new ClaimCommand(this);
 	new UnClaimCommand(this);
 
