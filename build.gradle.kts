@@ -21,8 +21,8 @@ repositories {
 }
 
 dependencies {
-    compileOnly("com.github.EsotericOrganisation:tss-core-plugin:0.1.6:dev-all")
-    compileOnly("com.github.EsotericOrganisation:tss-ranks-plugin:0.1.1:dev")
+    compileOnly("com.github.EsotericOrganisation:tss-core-plugin:0.2.1:dev-all")
+    compileOnly("com.github.EsotericOrganisation:tss-ranks-plugin:0.2.2:dev")
 
     paperweight.paperDevBundle("1.21-R0.1-SNAPSHOT")
 }
@@ -39,9 +39,13 @@ tasks {
 }
 
 bukkitPluginYaml {
-  main = "org.esoteric_organisation.tss_survival_plugin.TSSSurvivalPlugin"
-  load = BukkitPluginYaml.PluginLoadOrder.STARTUP
-  authors.addAll("Esoteric Organisation", "Esoteric Enderman")
-  description = project.description
-  apiVersion = "1.21"
+    name = "TSSSurvival"
+    authors.addAll("Esoteric Organisation", "Esoteric Enderman")
+    description = project.description
+
+    version = project.version.toString()
+    apiVersion = "1.21"
+    main = "org.esoteric.tss.minecraft.plugins.survival.TSSSurvivalPlugin"
+    load = BukkitPluginYaml.PluginLoadOrder.STARTUP
+    depend.addAll("TSSCore", "TSSRanks")
 }
