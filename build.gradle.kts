@@ -7,8 +7,8 @@ plugins {
   id("xyz.jpenilla.resource-factory-bukkit-convention") version "1.1.1" // Generates plugin.yml based on the Gradle config
 }
 
-group = "org.esoteric_organisation"
-version = "0.1"
+group = "org.esoteric"
+version = "0.1.0"
 description = "The Minecraft plugin behind all the survival features of The Slimy Swamp Minecraft server."
 
 java {
